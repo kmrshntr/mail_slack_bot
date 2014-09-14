@@ -23,4 +23,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "mail", "~> 2.6"
   spec.add_development_dependency "daemon-spawn", "~> 0.4"
   spec.add_development_dependency "slack-notifier", "~> 0.6"
+  spec.add_development_dependency "configatron", "~> 4.2"
+
 end
