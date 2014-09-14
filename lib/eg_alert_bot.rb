@@ -1,5 +1,9 @@
 require "eg_alert_bot/version"
 
 module EgAlertBot
-  # Your code goes here...
+  class Hello
+    def self.hi
+      puts "Hello world!"
+    end
+  end
 end

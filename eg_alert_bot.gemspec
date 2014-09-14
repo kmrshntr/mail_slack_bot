@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = EgAlertBot::VERSION
   spec.authors       = ["Kimura"]
   spec.email         = ["kimura@enigmo.co.jp"]
-  spec.summary       = %q{TODO: Write a short summary. Required.}
-  spec.description   = %q{TODO: Write a longer description. Optional.}
+  spec.summary       = %q{This is a slack bot saying service alert.}
+  spec.description   = %q{This is a slack bot saying service alert.}
   spec.homepage      = ""
   spec.license       = "MIT"
 
