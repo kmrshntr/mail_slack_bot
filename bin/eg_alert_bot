@@ -1,5 +1,0 @@
-#!/usr/bin/env ruby
-
-require 'eg_alert_bot'
-
-puts EgAlertBot::Hello.hi

@@ -1,16 +1,16 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'eg_alert_bot/version'
+require 'mail_slack_bot/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "eg_alert_bot"
-  spec.version       = EgAlertBot::VERSION
+  spec.name          = "mail_slack_bot"
+  spec.version       = MailSlackBot::VERSION
   spec.authors       = ["Kimura"]
   spec.email         = ["kimura@enigmo.co.jp"]
-  spec.summary       = %q{This is a slack bot saying service alert.}
-  spec.description   = %q{This is a slack bot saying service alert.}
-  spec.homepage      = ""
+  spec.summary       = %q{Receives and posts emails to slack.}
+  spec.description   = %q{This is a slack bot which receives and posts emails to slack.}
+  spec.homepage      = "https://github.com/kmrshntr/mail_slack_bot"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")
@@ -19,5 +19,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_development_dependency "bundler", "~> 1.6"
-  spec.add_development_dependency "rake"
+  spec.add_development_dependency "rake", "~> 10.3.2"
+  spec.add_development_dependency "mail", "~> 2.6.1"
+  spec.add_development_dependency "configatron", "~> 4.2.0"
 end
