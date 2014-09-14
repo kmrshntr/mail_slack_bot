@@ -2,48 +2,41 @@ require 'mail_slack_bot/version'
 require 'configatron/core'
 require 'mail'
 require 'slack-notifier'
+require 'daemon_spawn'
 
 module MailSlackBot
 
-  class Config
-
-    include Singleton
+  class Daemon < DaemonSpawn::Base
 
     class << self
 
-      attr_accessor :configuration
+      attr_accessor :team, :token, :channel, :username
 
-      def load_config(config_path)
-        load config_path
+      def configure_mail(&block)
+        Mail::Configuration.instance.instance_eval(&block)
       end
 
-      def configure
-        @configuration = Configatron::RootStore.new
-        @configuration.mail = Mail::Configuration.instance
-        yield(@configuration)
+      def configure_slack(&block)
+        instance_eval(&block)
       end
 
     end
 
-  end
-
-  class Daemon
-
-    def initialize(opts)
-      MailSlackBot::Config.load_config opts[:config_path]
-      @config = MailSlackBot::Config.configuration
-    end
-
-    def run
+    def start(args)
+      slack_client = Slack::Notifier.new(self.class.team, 
+        self.class.token, channel: self.class.channel, username: self.class.username)      
       loop do
-        mails = Mail.all
-        notifier = Slack::Notifier.new(@config.slack.team, @config.slack.token,
-                    channel: @config.slack.channel, username: @config.slack.username)
-        mails.each do |mail|
-          notifier.ping mail.body.decoded, pretext: mail.subject
+        Mail.all.each do |mail|
+          manipulate(mail, slack_client)
         end
-        sleep @config.mail_check_interval
       end
+    end
+
+    def manipulate(mail, slack_client)
+      slack_client.ping mail.body.decoded, pretext: mail.subject
+    end
+  
+    def stop
     end
 
   end
