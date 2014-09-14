@@ -1,6 +1,7 @@
 require 'mail_slack_bot/version'
 require 'configatron/core'
 require 'mail'
+require 'slack-notifier'
 
 module MailSlackBot
 
@@ -36,6 +37,12 @@ module MailSlackBot
     def run
       loop do
         mails = Mail.all
+        notifier = Slack::Notifier.new(@config.slack.team, @config.slack.token,
+                    channel: @config.slack.channel, username: @config.slack.username)
+        mails.each do |mail|
+          notifier.ping mail.body.decoded, pretext: mail.subject
+        end
+        sleep @config.mail_check_interval
       end
     end
 

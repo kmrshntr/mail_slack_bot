@@ -6,8 +6,8 @@ require 'mail_slack_bot/version'
 Gem::Specification.new do |spec|
   spec.name          = "mail_slack_bot"
   spec.version       = MailSlackBot::VERSION
-  spec.authors       = ["Kimura"]
-  spec.email         = ["kimura@enigmo.co.jp"]
+  spec.authors       = ["Shintaro Kimura"]
+  spec.email         = ["kmrshntr@gmail.com"]
   spec.summary       = %q{Receives and posts emails to slack.}
   spec.description   = %q{This is a slack bot which receives and posts emails to slack.}
   spec.homepage      = "https://github.com/kmrshntr/mail_slack_bot"
@@ -19,7 +19,8 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_development_dependency "bundler", "~> 1.6"
-  spec.add_development_dependency "rake", "~> 10.3.2"
-  spec.add_development_dependency "mail", "~> 2.6.1"
-  spec.add_development_dependency "configatron", "~> 4.2.0"
+  spec.add_development_dependency "rake", "~> 10.3"
+  spec.add_development_dependency "mail", "~> 2.6"
+  spec.add_development_dependency "configatron", "~> 4.2"
+  spec.add_development_dependency "slack-notifier", "~> 0.6"
 end
