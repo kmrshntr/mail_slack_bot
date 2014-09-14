@@ -20,7 +20,7 @@ Or install it yourself as:
 
 To create a bot, write a class that extends MailSlackBot::Daemon and provides mail and slack settings For example:
 
-```ruby:my_alert_bot.rb
+```ruby
 
 require 'mail_slack_bot'
 
