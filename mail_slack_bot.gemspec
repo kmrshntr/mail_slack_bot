@@ -20,9 +20,9 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency "bundler", "~> 1.6"
   spec.add_development_dependency "rake", "~> 10.3"
-  spec.add_development_dependency "mail", "~> 2.6"
-  spec.add_development_dependency "daemon-spawn", "~> 0.4"
-  spec.add_development_dependency "slack-notifier", "~> 0.6"
-  spec.add_development_dependency "configatron", "~> 4.2"
+  spec.add_runtime_dependency "mail", "~> 2.6"
+  spec.add_runtime_dependency "daemon-spawn", "~> 0.4"
+  spec.add_runtime_dependency "slack-notifier", "~> 0.6"
+  spec.add_runtime_dependency "configatron", "~> 4.2"
 
 end
