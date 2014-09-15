@@ -21,24 +21,18 @@ Or install it yourself as:
 To create a bot, write a class that extends MailSlackBot::Daemon and provides mail and slack settings For example:
 
 ```ruby
-
 require 'mail_slack_bot'
 
-class MyAlertBot < MailSlackBot::Daemon
+class BmAlertBot < MailSlackBot
 
   configure do |config|
-
-    # Slack settings
     config.slack.team = ENV["SLACK_TEAM"]
     config.slack.token = ENV["SLACK_TOKEN"]
     config.slack.channel = '#alert'
     config.slack.username = 'alert'
   
-    # Mail checking interval
     config.mail_check_interval = 10 # seconds
   
-    # Uses https://github.com/mikel/mail,
-    # so it's same as Mail.defaults https://github.com/mikel/mail#getting-emails-from-a-pop-server 
     config.mail.retriever_method :pop3,
                             :address    => "pop.gmail.com",
                             :port       => 995,
@@ -49,18 +43,8 @@ class MyAlertBot < MailSlackBot::Daemon
 
 end
 
-# See also https://github.com/alexvollmer/daemon-spawn
-MyAlertBot.spawn!(log_file: 'my_alert_bot.log',
-                  pid_file: 'my_alert_bot.pid',
-                  sync_log: true,
-                  working_dir: File.dirname(__FILE__))
+BmAlertBot.new.run
 
-```
-
-And run above script like following:
-
-```
-ruby my_alert_bot.rb start
 ```
 
 ## Contributing
