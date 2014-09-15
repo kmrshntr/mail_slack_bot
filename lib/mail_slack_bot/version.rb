@@ -1,3 +1,3 @@
-module MailSlackBot
-  VERSION = "0.0.2"
+class MailSlackBot
+  VERSION = "0.0.3"
 end

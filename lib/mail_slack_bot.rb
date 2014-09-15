@@ -5,49 +5,42 @@ require 'slack-notifier'
 require 'daemon_spawn'
 require 'logger'
 
-module MailSlackBot
+class MailSlackBot
 
-  class Daemon < DaemonSpawn::Base
+  class << self
 
-    $logger = Logger.new(STDOUT)
+    attr_reader :config
 
-    class << self
-
-      def configure
-        @configuration = Configatron::RootStore.new
-        @configuration.mail = Mail::Configuration.instance
-        yield(@configuration)
-      end
-
-      def config
-        @configuration
-      end
-
-    end
-
-    def start(args)
-      @config = self.class.config
-      sleep_time = @config.mail_check_interval || 10
-      slack_client = Slack::Notifier.new(@config.slack.team, @config.slack.token,
-                                         channel: @config.slack.channel, username: @config.slack.username)
-      loop do
-        $logger.debug("Feching mail.")
-        Mail.all.each do |mail|
-          $logger.debug mail.subject
-          $logger.debug mail.body.decoded
-          manipulate(mail, slack_client)
-        end
-        sleep sleep_time
-      end
-    end
-
-    def manipulate(mail, slack_client)
-      slack_client.ping mail.body.decoded.encode("UTF-8", undef: :replace, invalid: :replace),
-                        pretext: mail.subject
-    end
-  
-    def stop
+    def configure
+      @config = Configatron::RootStore.new
+      @config.mail = Mail::Configuration.instance
+      @config.logger = Logger.new(STDOUT)
+      yield(@config)
     end
 
   end
+
+  def run
+    @config = self.class.config
+    yield(@config) if block_given?
+    @logger = @config.logger
+    sleep_time = @config.mail_check_interval || 10
+    slack_client = Slack::Notifier.new(@config.slack.team, @config.slack.token,
+                                       channel: @config.slack.channel, username: @config.slack.username)
+    loop do
+      @logger.debug("Feching mail.")
+      Mail.all.each do |mail|
+        @logger.debug mail.subject
+        @logger.debug mail.body.decoded
+        manipulate(mail, slack_client)
+      end
+      sleep sleep_time
+    end
+  end
+
+  def manipulate(mail, slack_client)
+    slack_client.ping mail.body.decoded.encode("UTF-8", undef: :replace, invalid: :replace),
+                      pretext: mail.subject
+  end
+
 end
