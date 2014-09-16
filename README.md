@@ -18,12 +18,12 @@ Or install it yourself as:
 
 ## Usage
 
-To create a bot, write a class that extends MailSlackBot::Daemon and provides mail and slack settings For example:
+To create a bot, write a class that extends MailSlackBot and provides mail and slack settings For example:
 
 ```ruby
 require 'mail_slack_bot'
 
-class BmAlertBot < MailSlackBot
+class MyAlertBot < MailSlackBot
 
   configure do |config|
     config.slack.team = ENV["SLACK_TEAM"]
@@ -43,7 +43,7 @@ class BmAlertBot < MailSlackBot
 
 end
 
-BmAlertBot.new.run
+MyAlertBot.new.run
 
 ```
 
