@@ -28,11 +28,12 @@ class MyAlertBot < MailSlackBot
   configure do |config|
     config.slack.team = ENV["SLACK_TEAM"]
     config.slack.token = ENV["SLACK_TOKEN"]
-    config.slack.channel = '#alert'
-    config.slack.username = 'alert'
-  
-    config.mail_check_interval = 10 # seconds
-  
+    config.logger = Logger.new('log/my_alert_bot.log') # The default is STDOUT.
+    config.slack.channel = '#alert' # The default is '#general'
+    config.slack.username = 'alert' # The default is 'mail'
+    config.slack.icon_emoji = ':rage:' # The default is ':mail:'
+
+    # See also https://github.com/mikel/mail#getting-emails-from-a-pop-server
     config.mail.retriever_method :pop3,
                             :address    => "pop.gmail.com",
                             :port       => 995,

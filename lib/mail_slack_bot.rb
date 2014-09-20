@@ -4,6 +4,7 @@ require 'mail'
 require 'slack-notifier'
 require 'daemon_spawn'
 require 'logger'
+require 'nkf'
 
 class MailSlackBot
 
@@ -13,6 +14,9 @@ class MailSlackBot
 
     def configure
       @config = Configatron::RootStore.new
+      @config.slack.channel = '#general'
+      @config.slack.username = 'mail'
+      @config.slack.icon_emoji = ':mail:'
       @config.mail = Mail::Configuration.instance
       @config.logger = Logger.new(STDOUT)
       yield(@config)
@@ -28,19 +32,23 @@ class MailSlackBot
     slack_client = Slack::Notifier.new(@config.slack.team, @config.slack.token,
                                        channel: @config.slack.channel, username: @config.slack.username)
     loop do
-      @logger.debug("Feching mail.")
-      Mail.all.each do |mail|
-        @logger.debug mail.subject
-        @logger.debug mail.body.decoded
-        manipulate(mail, slack_client)
+      begin
+        @logger.debug("Feching mail.")
+        Mail.all.each do |mail|
+          @logger.debug mail.subject
+          @logger.debug mail.body.decoded
+          manipulate(mail, slack_client)
+        end
+      rescue => e
+        slack_client.ping e.backtrace.join("\n"), pretext: e.message, icon_emoji: ":bow:"
       end
       sleep sleep_time
     end
   end
 
   def manipulate(mail, slack_client)
-    slack_client.ping mail.body.decoded.encode("UTF-8", undef: :replace, invalid: :replace),
-                      pretext: mail.subject
+    slack_client.ping NKF.nkf('-w',mail.body.decoded),
+                      pretext: mail.subject, icon_emoji: @config.slack.icon_emoji
   end
 
 end
