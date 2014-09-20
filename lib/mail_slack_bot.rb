@@ -17,6 +17,7 @@ class MailSlackBot
       @config.slack.channel = '#general'
       @config.slack.username = 'mail'
       @config.slack.icon_emoji = ':mail:'
+      @config.mail_check_interval = 10
       @config.mail = Mail::Configuration.instance
       @config.logger = Logger.new(STDOUT)
       yield(@config)
@@ -28,7 +29,7 @@ class MailSlackBot
     @config = self.class.config
     yield(@config) if block_given?
     @logger = @config.logger
-    sleep_time = @config.mail_check_interval || 10
+    sleep_time = @config.mail_check_interval
     slack_client = Slack::Notifier.new(@config.slack.team, @config.slack.token,
                                        channel: @config.slack.channel, username: @config.slack.username)
     loop do
@@ -47,8 +48,14 @@ class MailSlackBot
   end
 
   def manipulate(mail, slack_client)
-    slack_client.ping NKF.nkf('-w',mail.body.decoded),
-                      pretext: mail.subject, icon_emoji: @config.slack.icon_emoji
+    text_plain = if mail.multipart?
+      mail.parts.detect { |p| p.content_type =~ /text\/plain/i }.body.decoded
+    else
+      mail.body.decoded
+    end
+    slack_client.ping NKF.nkf('-w', text_plain),
+                             pretext: mail.subject,
+                             icon_emoji: @config.slack.icon_emoji
   end
 
 end
